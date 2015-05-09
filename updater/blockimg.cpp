@@ -190,7 +190,9 @@ static bool discard_blocks(int fd, off64_t offset, uint64_t size) {
     int status = ioctl(fd, BLKDISCARD, &args);
     if (status == -1) {
         fprintf(stderr, "BLKDISCARD ioctl failed: %s\n", strerror(errno));
+#ifndef SUPPRESS_EMMC_WIPE
         return false;
+#endif
     }
     return true;
 }
@@ -1336,7 +1338,9 @@ static int PerformCommandErase(CommandParameters& params) {
 
             if (ioctl(params.fd, BLKDISCARD, &blocks) == -1) {
                 fprintf(stderr, "BLKDISCARD ioctl failed: %s\n", strerror(errno));
+#ifndef SUPPRESS_EMMC_WIPE
                 return -1;
+#endif
             }
         }
     }
